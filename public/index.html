@@ -1,21 +1,304 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Буфет колледжа</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            color: #212529;
+        }
+        h1 {
+            text-align: center;
+            color: #343a40;
+            text-shadow: 1px 1px 2px #dee2e6;
+            margin-bottom: 40px;
+        }
+        .category {
+            margin-top: 20px;
+        }
+        .category h2 {
+            color: #495057;
+            border-bottom: 2px solid #adb5bd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .product {
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .product:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        .product img {
+            width: 120px;
+            height: 120px;
+            margin-right: 20px;
+            border-radius: 10px;
+        }
+        .product h3 {
+            margin: 0;
+            color: #495057;
+        }
+        .product p {
+            margin: 5px 0;
+            color: #6c757d;
+        }
+        .order-form {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            border-radius: 10px;
+        }
+        .order-form input,
+        .order-form button {
+            padding: 15px;
+            margin: 10px 0;
+            width: calc(100% - 32px);
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            transition: box-shadow 0.3s;
+        }
+        .order-form input:focus,
+        .order-form button:focus {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .order-form button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .order-form button:hover {
+            background-color: #218838;
+        }
+        .cart {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .cart h3 {
+            margin: 0;
+            color: #495057;
+        }
+        .cart-items {
+            list-style-type: none;
+            padding: 0;
+            margin: 10px 0 0 0;
+        }
+        .cart-items li {
+            border-bottom: 1px solid #ced4da;
+            padding: 10px 0;
+        }
+        .cart-items li:last-child {
+            border-bottom: none;
+        }
+        .cart-total {
+            font-weight: bold;
+            margin-top: 10px;
+            color: #495057;
+        }
+        .cart button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            border-radius: 10px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .cart button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<h1>Буфет колледжа</h1>
+
+<div class="category">
+    <h2>Еда</h2>
+    <select id="foodCategory" onchange="filterProducts('food')">
+        <option value="all">Все</option>
+        <option value="пицца">Пицца</option>
+        <option value="салат">Салаты</option>
+        <option value="шаурма">Шаурма</option>
+    </select>
+    <div class="product food" data-category="пицца">
+        <img src="pizza.jpg" alt="Пицца">
+        <div>
+            <h3>Пицца</h3>
+            <p>Цена: 90 руб.</p>
+            <button onclick="addToCart('Пицца', 90)">Добавить в корзину</button>
+        </div>
+    </div>
+    <div class="product food" data-category="салат">
+        <img src="caesar.jpg" alt="Цезарь">
+        <div>
+            <h3>Цезарь</h3>
+            <p>Цена: 150 руб.</p>
+            <button onclick="addToCart('Цезарь', 150)">Добавить в корзину</button>
+        </div>
+    </div>
+    <div class="product food" data-category="шаурма">
+        <img src="shawarma.jpg" alt="Шаурма">
+        <div>
+            <h3>Шаурма</h3>
+            <p>Цена: 120 руб.</p>
+            <button onclick="addToCart('Шаурма', 120)">Добавить в корзину</button>
+        </div>
+    </div>
+</div>
+
+<div class="category">
+    <h2>Напитки</h2>
+    <select id="drinkCategory" onchange="filterProducts('drink')">
+        <option value="all">Все</option>
+        <option value="вода">Вода</option>
+        <option value="газировка">Газированные напитки</option>
+    </select>
+    <div class="product drink" data-category="вода">
+        <img src="water.jpg" alt="Вода">
+        <div>
+            <h3>Минеральная вода</h3>
+            <p>Цена: 50 руб.</p>
+            <button onclick="addToCart('Минеральная вода', 50)">Добавить в корзину</button>
+        </div>
+    </div>
+    <div class="product drink" data-category="газировка">
+        <img src="soda.jpg" alt="Газировка">
+        <div>
+            <h3>Лимонад</h3>
+            <p>Цена: 60 руб.</p>
+            <button onclick="addToCart('Лимонад', 60)">Добавить в корзину</button>
+        </div>
+    </div>
+    <div class="product drink" data-category="газировка">
+        <img src="cola.jpg" alt="Кола">
+        <div>
+            <h3>Кока-Кола</h3>
+            <p>Цена: 70 руб.</p>
+            <button onclick="addToCart('Кока-Кола', 70)">Добавить в корзину</button>
+        </div>
+    </div>
+</div>
+
+<div class="order-form" id="orderForm">
+    <form id="purchaseForm" action="/sendOrder" method="POST">
+        <input type="text" id="productName" placeholder="Название товара" readonly>
+        <input type="number" id="productPrice" placeholder="Цена товара" readonly>
+        <input type="text" id="customerName" placeholder="Ваше имя" required>
+        <input type="text" id="customerTelegramId" placeholder="Ваш Telegram ID" required>
+        <button type="submit">Отправить заказ</button>
+    </form>
+</div>
+
+<div class="cart">
+    <h3>Корзина</h3>
+    <ul class="cart-items" id="cartItems"></ul>
+    <div class="cart-total" id="cartTotal">Итого: 0 руб.</div>
+    <button onclick="openOrderForm()">Оформить заказ</button>
+</div>
+
+<script>
+    let cart = [];
+
+    function addToCart(productName, productPrice) {
+        cart.push({ name: productName, price: productPrice });
+        updateCart();
+    }
+
+    function updateCart() {
+                const cartItems = document.getElementById('cartItems');
+        cartItems.innerHTML = '';
+        let total = 0;
+
+        cart.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = `${item.name} - ${item.price} руб.`;
+            cartItems.appendChild(li);
+            total += item.price;
+        });
+
+        const cartTotal = document.getElementById('cartTotal');
+        cartTotal.textContent = `Итого: ${total} руб.`;
+    }
+
+    function openOrderForm() {
+        const orderForm = document.getElementById('orderForm');
+        const cartDetails = cart.map(item => `${item.name} (${item.price} руб.)`).join(', ');
+
+        document.getElementById('productName').value = cartDetails;
+        document.getElementById('productPrice').value = cart.reduce((sum, item) => sum + item.price, 0);
+        orderForm.style.display = 'block';
+    }
+
+    function filterProducts(type) {
+        const category = document.getElementById(`${type}Category`).value;
+        const products = document.querySelectorAll(`.product.${type}`);
+
+        products.forEach(product => {
+            product.style.display = category === 'all' || product.getAttribute('data-category') === category ? 'flex' : 'none';
+        });
+    }
+
+    document.getElementById('purchaseForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const customerName = document.getElementById('customerName').value;
+        const customerTelegramId = document.getElementById('customerTelegramId').value;
+        const cartDetails = cart.map(item => `${item.name} (${item.price} руб.)`).join(', ');
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+        // Отправляем заказ на сервер
+        fetch('/sendOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                customerName: customerName,
+                customerTelegramId: customerTelegramId,
+                cartDetails: cartDetails,
+                total: total
+            })
+        }).then(response => {
+            if (response.ok) {
+                alert('Заказ отправлен!');
+                cart = [];
+                updateCart();
+                document.getElementById('orderForm').style.display = 'none';
+            } else {
+                alert('Ошибка при отправке заказа.');
+            }
+        }).catch(err => {
+            console.error('Ошибка:', err);
+            alert('Произошла ошибка при отправке заказа.');
+        });
+    });
+</script>
+
+</body>
 </html>
