@@ -14,7 +14,7 @@ function App() {
 
     return (
         <div className="App">
-            work
+            work ebat
             <button onClick={onClose}>Закрыть</button>
         </div>
     );
